@@ -8,7 +8,7 @@ const detectAndComputeAsync = (det, img) =>
         .then(kps => det.computeAsync(img, kps)
             .then(desc => ({ kps, desc }))
         );
-
+// Change based on prefer image
 const img1 = cv.imread('data/per.jpg');
 const img2 = cv.imread('data/husky.jpg');
 
@@ -52,7 +52,7 @@ exports.rate= function(req,res){
         }
         var file = req.files.sampleImage;
         var filename = file.name;
-
+         // Create folder first before move the file
         file.mv('uploadedImage/'+filename, function(){
             res.status(200).send({ error: false, message: 'Successful moved' });
             cv.imread('uploadedImage/'+filename);
