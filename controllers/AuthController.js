@@ -33,7 +33,7 @@ exports.login = function (req, res) {
 
 //logout
 exports.logout = function(req,res){
-    if (req.session) {
+    if (req.session != '') {
         // delete session object
         req.session.destroy(function(err) {
           if(err) {
