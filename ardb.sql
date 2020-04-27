@@ -20,11 +20,11 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `ardb`
-USE  a171926;
+
 --
 
 -- --------------------------------------------------------
-
+USE  a171926;
 --
 -- Table structure for table `tdmodels`
 --
