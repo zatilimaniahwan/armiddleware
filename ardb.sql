@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 
 --
 -- Database: `ardb`
-CREATE Database ardb;
+USE  a171926;
 --
 
 -- --------------------------------------------------------
