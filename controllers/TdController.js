@@ -18,8 +18,12 @@ exports.upload = function (req, res) {
                 'url': 'uploadedTdModel/' + filename,
                 'name': filename
             });
-            TdModel.createFile(tdModel, function () {
-                res.status(200).send({ error: false, message: 'Successful created' });
+            TdModel.createFile(tdModel, function (err,file) {
+                if(file >0){
+                    return res.status(200).send('Successful');
+                }else{
+                   return res.status(400).send('Please try again');
+                }
             })
         } catch (error) {
             res.status(400).send({ error: true, message: err });
@@ -32,10 +36,9 @@ exports.list = function (req,res) {
     TdModel.getAllFiles(function (err, files) {
         try {
             if(files.length >0){
-                res.send(files);
-                res.status(200).send({ error: false, message: 'Successful fetched' });
+               return res.status(200).send(files);
             }else{
-                res.status(200).send({error: false, message: 'No data available'})
+                return res.status(400).send('No data available');
             }
           
         } catch (err) {
@@ -48,7 +51,6 @@ exports.list = function (req,res) {
 exports.remove = function(req, res) {
     TdModel.remove( req.params.fileId, function(file) {
         try {
-            res.send(file);
             res.status(200).send({ error: false, message: 'Successful removed' });
         } catch (err) {
             res.status(400).send({ error: true, message: err });
