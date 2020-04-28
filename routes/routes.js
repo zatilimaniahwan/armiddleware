@@ -39,5 +39,13 @@ module.exports = function (app) {
   // Match the image
   app.route('/api/images/match').post(imageController.match);
   /*---------------------------------------------------------*/
+  
+  
+  /*-------- Role ----------------------------------------------*/
+  // Create a new role
+  app.route('/api/roles/create').post(roleController.create);
+  // List all roles
+  app.route('/api/roles').get(roleController.list);
+  /*----------------------------------------------------------------*/
 
 };
