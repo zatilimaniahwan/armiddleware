@@ -11,8 +11,7 @@ exports.upload = function (req, res) {
     // change req.files.[based on input name]
     var file = req.files.sampleFile;
     var filename = file.name;
-    
-    // Create folder first before move the file
+
     file.mv('uploadedTdModel/' + filename, function (err) {
         try {
             var tdModel = new TdModel({
@@ -29,11 +28,16 @@ exports.upload = function (req, res) {
 }
 
 // List all files
-exports.list = function (res) {
+exports.list = function (req,res) {
     TdModel.getAllFiles(function (err, files) {
         try {
-            res.send(files);
-            res.status(200).send({ error: false, message: 'Successful fetched' });
+            if(files.length >0){
+                res.send(files);
+                res.status(200).send({ error: false, message: 'Successful fetched' });
+            }else{
+                res.status(200).send({error: false, message: 'No data available'})
+            }
+          
         } catch (err) {
             res.status(400).send({ error: true, message: err });
         }
