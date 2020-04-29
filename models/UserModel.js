@@ -8,14 +8,18 @@ const User = function(user){
     this.password = user.password;
     this.email = user.email;
     this.contact_number = user.contact_number;
+    this.role_id = user.role_id;
+    this.is_active = user.is_active;
+    this.activation_code = user.activation_code;
     this.created_at =new Date();
+    this.expired_date = new Date();
+    this.current_period = user.current_period;
 };
 
 // Create new user
 User.createUser = function (newUser, result) {    
     conn.query("INSERT INTO users set ? ", newUser, function (err, res) {
        try{
-        console.log(res.insertId);
         result(null, res.insertId); 
        }catch(err){
         console.log("error: ", err);
