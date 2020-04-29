@@ -5,6 +5,7 @@ module.exports = function (app) {
   const authController = require('../controllers/AuthController');
   const tdController = require('../controllers/TdController');
   const imageController = require('../controllers/ImageController');
+  const roleController = require('../controllers/RoleController');
 
   // Test route
   app.get('/hello', function (req, res) {
