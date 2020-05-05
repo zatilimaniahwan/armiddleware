@@ -1,69 +1,82 @@
-'user strict';
-const conn = require('../DbConfig.js');
+'use strict';
 
-// Object constructor for user (sort by following the arrangement of column in database)
-const User = function(user){
-    this.fullname = user.fullname;
-    this.username = user.username;
-    this.password = user.password;
-    this.email = user.email;
-    this.contact_number = user.contact_number;
-    this.role_id = user.role_id;
-    this.is_active = user.is_active;
-    this.activation_code = user.activation_code;
-    this.created_at =new Date();
-    this.expired_date = new Date();
-    this.current_period = user.current_period;
-};
+const User = require('../models/UserModel');
+const Bcrypt = require('bcryptjs'); // encrypt password
 
-// Create new user
-User.createUser = function (newUser, result) {    
-    conn.query("INSERT INTO users set ? ", newUser, function (err, res) {
-       try{
-        result(null, res.insertId); 
-       }catch(err){
-        console.log("error: ", err);
-        result(err, null); 
-       }  
-        });           
-};
-
-// Get all users
-User.getAllUser = function (result) {
-    conn.query("Select * from users", function (err, res) {
-        try{
-            console.log('users : ', res);  
-            result(null, res); 
-        }catch(err){
-            console.log("error: ", err);
-            result(null, err);
+// list all users
+exports.list = function (req, res) {
+    User.getAllUser(function (err, users) {
+        try {
+            if (users.length > 0) {
+                return res.status(200).send({status:200,error:false,message:'OK',result:users});
+            }else{
+                return res.status(404).send({status:404, error:true,message:err});
+            }
+        } catch (err) {
+            res.status(500).send({status:500,error: true, message: err});
         }
-    });   
+    });
+};
+
+// create new user
+exports.create = function (req, res) {
+    try {
+        var new_user = new User({
+            'fullname': req.body.fullname,
+            'username': req.body.username,
+            'password': Bcrypt.hashSync(req.body.password, 10),  // Encrypt password before save it to the database
+            'email': req.body.email,
+            'contact_number': req.body.contact_number,
+            'role_id': req.body.role_id,
+            'is_active': 1,
+            'activation_code': req.body.activation_code,
+            'current_period': req.body.current_period
+        });
+            //handles null error 
+        if (!new_user.fullname || !new_user.username || !new_user.password || !new_user.email || !new_user.contact_number) {
+            res.status(400).send({status:404,error: true, message: 'Not Found' });
+        } else {
+            User.createUser(new_user, function (err, user) {
+                if(user >0){
+                    return res.status(201).send({status:201,error:false,message:'Ok'});
+                }else{
+                   return res.status(404).send({status:404, error:true,message:err});
+                }
+            });
+        }
+    } catch (err) {
+        res.status(400).send({status:400,error: true, message: err});
+    }
+
 };
 
 // Update user
-User.update = function(id, updateuser, result){
-    conn.query("UPDATE users SET ? WHERE id = ?", [updateuser, id], function (err, res) {
-        try{
-            console.log('users : ', res);  
-            result(null, res); 
-        }catch(err){
-            console.log("error: ", err);
-            result(null, err);
-        }
-     }); 
-  };
+exports.update = function(req,res){
+    try{
+        User.update(req.params.user_id, new User(req.body),function(err,user){
+            if(err){
+                return res.status(400).send({status:400,error:true,message:err});
+            }else{
+                return res.status(201).send({status:201,error:false,result:user});
+            }
+        })
+    }catch(err){
+        res.status(500).send({status:500,error: true, message: err});
+    }
+}
 
-  //Remove user
-  User.remove = function(id, result){
-       conn.query("DELETE FROM users WHERE id = ?", [id], function (err, res) {
-        try{
-            console.log('users : ', res);  
-            result(null, res); 
-        }catch(err){
-            console.log("error: ", err);
-            result(null, err);
-        }
-    }); 
-  };
- module.exports= User;
+// Remove user
+exports.remove = function(req,res){
+    try{
+        User.remove(req.params.user_id,function(err){
+            if(err){
+                return res.status(400).send({status:400,error:true,message:err});
+            }else{
+                return res.status(201).send({status:201,error:false,message:'Ok'});
+            }
+        });
+    }catch(err){
+        res.status(500).send({status:500,error: true, message: err});
+    }
+}
+
