@@ -1,53 +1,69 @@
-'use strict';
+'user strict';
+const conn = require('../DbConfig.js');
 
-const User = require('../models/UserModel');
-const Bcrypt = require('bcryptjs'); // encrypt password
-
-// list all users
-exports.list = function (req, res) {
-    User.getAllUser(function (err, users) {
-        try {
-            if (users.length > 0) {
-                return res.status(200).send(users);
-            }else{
-                return res.status(400).send('No data available');
-            }
-        } catch (err) {
-            res.status(400).send({ error: true, message: err });
-        }
-    });
+// Object constructor for user (sort by following the arrangement of column in database)
+const User = function(user){
+    this.fullname = user.fullname;
+    this.username = user.username;
+    this.password = user.password;
+    this.email = user.email;
+    this.contact_number = user.contact_number;
+    this.role_id = user.role_id;
+    this.is_active = user.is_active;
+    this.activation_code = user.activation_code;
+    this.created_at =new Date();
+    this.expired_date = new Date();
+    this.current_period = user.current_period;
 };
 
-// create new user
-exports.create = function (req, res) {
-    try {
-        var new_user = new User({
-            'fullname': req.body.fullname,
-            'username': req.body.username,
-            'password': Bcrypt.hashSync(req.body.password, 10),  // Encrypt password before save it to the database
-            'email': req.body.email,
-            'contact_number': req.body.contact_number,
-            'role_id': req.body.role_id,
-            'is_active': 1,
-            'activation_code': req.body.activation_code,
-            'current_period': req.body.current_period
-        });
-            //handles null error 
-        if (!new_user.fullname || !new_user.username || !new_user.password || !new_user.email || !new_user.contact_number) {
-            res.status(400).send({ error: true, message: 'Please provide the data' });
-        } else {
-            User.createUser(new_user, function (err, user) {
-                if(user >0){
-                    return res.status(200).send('Successful');
-                }else{
-                   return res.status(400).send('Please try again');
-                }
-            });
-        }
-    } catch (err) {
-        res.status(400).send({ error: true, message: err });
-    }
-
+// Create new user
+User.createUser = function (newUser, result) {    
+    conn.query("INSERT INTO users set ? ", newUser, function (err, res) {
+       try{
+        result(null, res.insertId); 
+       }catch(err){
+        console.log("error: ", err);
+        result(err, null); 
+       }  
+        });           
 };
 
+// Get all users
+User.getAllUser = function (result) {
+    conn.query("Select * from users", function (err, res) {
+        try{
+            console.log('users : ', res);  
+            result(null, res); 
+        }catch(err){
+            console.log("error: ", err);
+            result(null, err);
+        }
+    });   
+};
 
+// Update user
+User.update = function(id, updateuser, result){
+    conn.query("UPDATE users SET ? WHERE id = ?", [updateuser, id], function (err, res) {
+        try{
+            console.log('users : ', res);  
+            result(null, res); 
+        }catch(err){
+            console.log("error: ", err);
+            result(null, err);
+        }
+     }); 
+  };
+
+  //Remove user
+  User.remove = function(id, result){
+       conn.query("DELETE FROM users WHERE id = ?", [id], function (err, res) {
+        try{
+            console.log('users : ', res);  
+            result(null, res); 
+        }catch(err){
+            console.log("error: ", err);
+            result(null, err);
+        }
+    }); 
+  };
+ module.exports= User;
