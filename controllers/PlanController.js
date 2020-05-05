@@ -10,7 +10,7 @@ exports.list = function (req, res) {
             if (plan_details.length > 0) {
                 return res.status(200).send({status:200,error:false,message:'Successful Fetched'});
             }else{
-                return res.status(400).send({status:400,error:true, message:'err});
+                return res.status(400).send({status:400,error:true, message:err});
             }
       
     });
