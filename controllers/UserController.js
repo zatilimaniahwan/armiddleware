@@ -13,7 +13,7 @@ exports.list = function (req, res) {
                 return res.status(404).send({status:404, error:true,message:err});
             }
         } catch (err) {
-            res.status(500).send({status:500,error: true, message: err});
+            throw new Error(err.message)
         }
     });
 };
@@ -45,7 +45,7 @@ exports.create = function (req, res) {
             });
         }
     } catch (err) {
-        res.status(400).send({status:400,error: true, message: err});
+        throw new Error(err.message)
     }
 
 };
@@ -61,7 +61,7 @@ exports.update = function(req,res){
             }
         })
     }catch(err){
-        res.status(500).send({status:500,error: true, message: err});
+        throw new Error(err.message)
     }
 }
 
@@ -76,7 +76,7 @@ exports.remove = function(req,res){
             }
         });
     }catch(err){
-        res.status(500).send({status:500,error: true, message: err});
+        throw new Error(err.message);
     }
 }
 
