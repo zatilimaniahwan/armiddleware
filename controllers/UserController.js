@@ -9,7 +9,7 @@ exports.list = function (req, res) {
         User.getAllUser(function (err, users) {
 
             if (users.length > 0) {
-                return res.status(200).send({ status: 200, error: false, message: 'OK', result: users });
+                return res.status(201).send({ status: 200, error: false, message: 'OK', result: users });
             } else {
                 return res.status(404).send({ status: 404, error: true, message: err });
             }
