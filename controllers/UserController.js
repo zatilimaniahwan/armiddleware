@@ -5,17 +5,20 @@ const Bcrypt = require('bcryptjs'); // encrypt password
 
 // list all users
 exports.list = function (req, res) {
-    User.getAllUser(function (err, users) {
-        try {
+    try {
+        User.getAllUser(function (err, users) {
+
             if (users.length > 0) {
-                return res.status(200).send({status:200,error:false,message:'OK',result:users});
-            }else{
-                return res.status(404).send({status:404, error:true,message:err});
+                return res.status(200).send({ status: 200, error: false, message: 'OK', result: users });
+            } else {
+                return res.status(404).send({ status: 404, error: true, message: err });
             }
-        } catch (err) {
-            throw new Error(err.message)
-        }
-    });
+
+        });
+    }catch(err){
+        throw new Error(err.message);
+    }
+  
 };
 
 // create new user
@@ -32,50 +35,50 @@ exports.create = function (req, res) {
             'activation_code': req.body.activation_code,
             'current_period': req.body.current_period
         });
-            //handles null error 
+        //handles null error 
         if (!new_user.fullname || !new_user.username || !new_user.password || !new_user.email || !new_user.contact_number) {
-            res.status(400).send({status:404,error: true, message: 'Not Found' });
+            res.status(400).send({ status: 404, error: true, message: 'Not Found' });
         } else {
             User.createUser(new_user, function (err, user) {
-                if(user >0){
-                    return res.status(201).send({status:201,error:false,message:'Ok'});
-                }else{
-                   return res.status(404).send({status:404, error:true,message:err});
+                if (user > 0) {
+                    return res.status(201).send({ status: 201, error: false, message: 'Ok' });
+                } else {
+                    return res.status(404).send({ status: 404, error: true, message: err });
                 }
             });
         }
     } catch (err) {
-        throw new Error(err.message)
+        throw new Error(err.message);
     }
 
 };
 
 // Update user
-exports.update = function(req,res){
-    try{
-        User.update(req.params.user_id, new User(req.body),function(err,user){
-            if(err){
-                return res.status(400).send({status:400,error:true,message:err});
-            }else{
-                return res.status(201).send({status:201,error:false,result:user});
+exports.update = function (req, res) {
+    try {
+        User.update(req.params.user_id, new User(req.body), function (err, user) {
+            if (err) {
+                return res.status(400).send({ status: 400, error: true, message: err });
+            } else {
+                return res.status(201).send({ status: 201, error: false, result: user });
             }
         })
-    }catch(err){
-        throw new Error(err.message)
+    } catch (err) {
+        throw new Error(err.message);
     }
 }
 
 // Remove user
-exports.remove = function(req,res){
-    try{
-        User.remove(req.params.user_id,function(err){
-            if(err){
-                return res.status(400).send({status:400,error:true,message:err});
-            }else{
-                return res.status(201).send({status:201,error:false,message:'Ok'});
+exports.remove = function (req, res) {
+    try {
+        User.remove(req.params.user_id, function (err) {
+            if (err) {
+                return res.status(400).send({ status: 400, error: true, message: err });
+            } else {
+                return res.status(201).send({ status: 201, error: false, message: 'Ok' });
             }
         });
-    }catch(err){
+    } catch (err) {
         throw new Error(err.message);
     }
 }
