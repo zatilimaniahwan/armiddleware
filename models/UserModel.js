@@ -41,4 +41,29 @@ User.getAllUser = function (result) {
     });   
 };
 
+// Update user
+User.update = function(id, updateuser, result){
+    conn.query("UPDATE users SET ? WHERE id = ?", [updateuser, id], function (err, res) {
+        try{
+            console.log('users : ', res);  
+            result(null, res); 
+        }catch(err){
+            console.log("error: ", err);
+            result(null, err);
+        }
+     }); 
+  };
+
+  //Remove user
+  User.remove = function(id, result){
+       conn.query("DELETE FROM users WHERE id = ?", [id], function (err, res) {
+        try{
+            console.log('users : ', res);  
+            result(null, res); 
+        }catch(err){
+            console.log("error: ", err);
+            result(null, err);
+        }
+    }); 
+  };
  module.exports= User;
