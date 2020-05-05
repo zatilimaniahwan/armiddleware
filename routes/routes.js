@@ -16,6 +16,10 @@ module.exports = function (app) {
   app.route('/api/users').get(userController.list);
   // create new user
   app.route('/api/register').post(userController.create);
+  // update user
+  app.route('/api/edit/:user_id').put(userController.update);
+  // delete user
+  app.route('/api/delete/:user_id').delete(userController.remove);
   /*---------------------------------------------------*/
 
   /*-------- Authentication ---------------------------*/
