@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
-const methodOverride = require('method-override')
-const cors = require('cors');
+const methodOverride = require('method-override');
 const mysql = require('./DbConfig.js'); // importing dbConfig
 const session = require('express-session');
 const routes = require('./routes/routes.js'); //importing route
