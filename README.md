@@ -7,4 +7,4 @@ This is a part where the logic of data takes part. So, this is a section where t
 ## Routes
 This is all routes that will connecting the controller to the main endpoint(index.js)
 ## Run Apps
-node index.js
+ ```node index.js```
